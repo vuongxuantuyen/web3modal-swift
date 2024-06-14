@@ -19,12 +19,17 @@ class Store: ObservableObject {
     @Published var connecting: Bool = false
     @Published var account: W3MAccount? {
         didSet {
-            let matchingChain = ChainPresets.ethChains.first(where: {
+            var matchingChain = ChainPresets.ethChains.first(where: {
                 $0.chainNamespace == account?.chain.namespace && $0.chainReference == account?.chain.reference
             })
+
             if matchingChain == nil {
-                debugPrint("Selected chain is nil")
+                if account?.chain.namespace == ChainPresets.solanaChain.chainNamespace {
+                    matchingChain = ChainPresets.solanaChain
+
+                }
             }
+
             Store.shared.selectedChain = matchingChain
             
             AccountStorage.save(account)
@@ -35,10 +40,17 @@ class Store: ObservableObject {
     @Published var session: Session? {
         didSet {
             if let blockchain = session?.accounts.first?.blockchain {
-                let matchingChain = ChainPresets.ethChains.first(where: {
+                var matchingChain = ChainPresets.ethChains.first(where: {
                     $0.chainNamespace == blockchain.namespace && $0.chainReference == blockchain.reference
                 })
-                
+
+                if matchingChain == nil {
+                    if account?.chain.namespace == ChainPresets.solanaChain.chainNamespace {
+                        matchingChain = ChainPresets.solanaChain
+
+                    }
+                }
+
                 Store.shared.selectedChain = matchingChain
             }
         }

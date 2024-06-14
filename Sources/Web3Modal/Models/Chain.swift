@@ -211,4 +211,20 @@ enum ChainPresets {
             imageId: "3ff73439-a619-4894-9262-4470c773a100"
         )
     ]
+
+    static var solanaChain: Chain = Chain(chainName: "Solana",
+                                          chainNamespace: "solana",
+                                          chainReference: "101",
+                                          requiredMethods: [
+                                            "solana_signMessage",
+                                            "solana_signTransaction"
+                                          ],
+                                          optionalMethods: [],
+                                          events: [],
+                                          token: Chain.Token(name: "SOLANA",
+                                                             symbol: "SOL",
+                                                             decimal: 18),
+                                          rpcUrl: "https://api.mainnet-beta.solana.com",
+                                          blockExplorerUrl: "https://explorer.solana.com",
+                                          imageId: "")
 }
