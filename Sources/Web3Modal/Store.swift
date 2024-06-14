@@ -22,7 +22,9 @@ class Store: ObservableObject {
             let matchingChain = ChainPresets.ethChains.first(where: {
                 $0.chainNamespace == account?.chain.namespace && $0.chainReference == account?.chain.reference
             })
-            
+            if matchingChain == nil {
+                debugPrint("Selected chain is nil")
+            }
             Store.shared.selectedChain = matchingChain
             
             AccountStorage.save(account)

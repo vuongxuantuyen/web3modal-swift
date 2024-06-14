@@ -8,6 +8,9 @@ extension W3MJSONRPC {
                 address: address,
                 message: message
             )
+        case let .eth_signTypedData(address, message):
+            return .eth_signTypedData_v3(address: address,
+                                         typedDataJson: JSONString(rawValue: message)!)
         case .eth_requestAccounts:
             return .eth_requestAccounts
         case let .eth_signTransaction(from, to, value, data, nonce, _, gasPrice, maxFeePerGas, maxPriorityFeePerGas, gasLimit, chainId):

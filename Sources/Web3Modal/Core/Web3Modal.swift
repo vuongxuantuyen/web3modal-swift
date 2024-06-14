@@ -49,7 +49,9 @@ public class Web3Modal {
         
         return client
     }()
-    
+
+    public static var onCoinBaseInitiateHandshake: ((ResponseResult) -> Void)?
+
     struct Config {
         static let sdkVersion: String = {
             guard
@@ -213,6 +215,7 @@ public class Web3Modal {
                         case .failure(let error):
                             store.toast = .init(style: .error, message: error.localizedDescription)
                     }
+                    onCoinBaseInitiateHandshake?(result)
                 }
             }
         )
@@ -255,7 +258,8 @@ public extension Web3Modal {
         _ = Web3Modal.instance
         
         Store.shared.connecting = true
-        
+        Store.shared.toast = nil
+
         Web3Modal.viewModel.router.setRoute(Store.shared.account != nil ? Router.AccountSubpage.profile : Router.ConnectingSubpage.connectWallet)
         
         let modal = Web3ModalSheetController(router: Web3Modal.viewModel.router)
