@@ -173,7 +173,7 @@ public class Web3ModalClient {
                 let chain = getSelectedChain(),
                 let blockchain = Blockchain(namespace: chain.chainNamespace, reference: chain.chainReference)
             else { return }
-            
+
             if case let .personal_sign(address, message) = request {
                 try await signClient.request(
                     params: .init(
@@ -183,6 +183,11 @@ public class Web3ModalClient {
                         chainId: blockchain
                     )
                 )
+            } else if case let .eth_signTypedData(address, message) = request {
+                try await signClient.request(params: .init(topic: session.topic,
+                                                           method: request.rawValues.method,
+                                                           params: AnyCodable(any: [address, message]),
+                                                           chainId: blockchain))
             } else {
                 try await signClient.request(
                     params: .init(
@@ -235,7 +240,7 @@ public class Web3ModalClient {
             break
         }
     }
-    
+
     /// For sending JSON-RPC requests to wallet.
     /// - Parameters:
     ///   - params: Parameters defining request and related session
@@ -276,7 +281,12 @@ public class Web3ModalClient {
             break
         }
     }
-    
+
+    public func removeSessionAndAccount() {
+        store.session = nil
+        store.account = nil
+    }
+
     /// Query sessions
     /// - Returns: All sessions
     public func getSessions() -> [Session] {
@@ -329,7 +339,7 @@ public class Web3ModalClient {
             let urlString = session.peer.redirect?.native ?? session.peer.redirect?.universal,
             let url = URL(string: urlString)
         else { return }
-        
+
         DispatchQueue.main.async {
             UIApplication.shared.open(url, completionHandler: nil)
         }
